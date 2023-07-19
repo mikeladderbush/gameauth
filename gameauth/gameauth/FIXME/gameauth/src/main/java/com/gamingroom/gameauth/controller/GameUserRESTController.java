@@ -44,7 +44,7 @@ public class GameUserRESTController {
 
     @GET
     @Path("/{id}")
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({"USER"})
     public Response getGameUserById(@PathParam("id") Integer id,@Auth GameUser user) {
         GameUserInfo gameUserInfo = GameUserDB.getGameUser(id);
         if (gameUserInfo != null)

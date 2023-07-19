@@ -32,31 +32,31 @@ public class GameAuthApplication extends Application<GameAuthConfiguration> {
 	}
 
 	@Override
-	public void run(GameAuthConfiguration c, Environment e) throws Exception {
+	public void run(GameAuthConfiguration c, Environment DemoRESTCLIENT) throws Exception {
 
 		LOGGER.info("Registering Jersey Client");
-		final Client client = new JerseyClientBuilder(e)
+		final Client client = new JerseyClientBuilder(DemoRESTCLIENT)
 				.using(c.getJerseyClientConfiguration())
 				.build(getName());
-		e.jersey().register(new RESTClientController(client));
+		DemoRESTCLIENT.jersey().register(new RESTClientController(client));
 
 		LOGGER.info("Registering REST resources");
-		e.jersey().register(new GameUserRESTController(e.getValidator()));
+		DemoRESTCLIENT.jersey().register(new GameUserRESTController(DemoRESTCLIENT.getValidator()));
 
 		// Application health check
-		e.healthChecks().register("APIHealthCheck", new AppHealthCheck(client));
+		DemoRESTCLIENT.healthChecks().register("APIHealthCheck", new AppHealthCheck(client));
 
 		// Run multiple health checks
-		e.jersey().register(new HealthCheckController(e.healthChecks()));
+		DemoRESTCLIENT.jersey().register(new HealthCheckController(DemoRESTCLIENT.healthChecks()));
 
 		// Setup Basic Security
-		e.jersey().register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<GameUser>()
+		DemoRESTCLIENT.jersey().register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<GameUser>()
 				.setAuthenticator(new GameAuthenticator())
 				.setAuthorizer(new GameAuthorizer())
 				.setRealm("BASIC-AUTH-REALM")
 				.buildAuthFilter()));
-		e.jersey().register(RolesAllowedDynamicFeature.class);
-		e.jersey().register(new AuthValueFactoryProvider.Binder<>(GameUser.class));
+		DemoRESTCLIENT.jersey().register(RolesAllowedDynamicFeature.class);
+		DemoRESTCLIENT.jersey().register(new AuthValueFactoryProvider.Binder<>(GameUser.class));
 	}
 
 	public static void main(String[] args) throws Exception {

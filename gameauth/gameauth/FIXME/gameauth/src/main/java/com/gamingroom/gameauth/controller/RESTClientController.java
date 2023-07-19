@@ -25,7 +25,7 @@ public class RESTClientController
     }
 
     @GET
-    @Path("/gameusers")
+    @Path("/gameusers/")
     public String getGameUsers()
     {
         //Do not hard code in your application
